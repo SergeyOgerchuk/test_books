@@ -1,12 +1,14 @@
 <?php
 
+use app\models\Subscription;
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var app\models\Author $model */
 
-$this->title = $model->id;
+$this->title = $model->full_name;
 $this->params['breadcrumbs'][] = ['label' => 'Authors', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -15,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+<?php if (!Yii::$app->user->isGuest): ?>
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -25,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+<?php endif; ?>
 
     <?= DetailView::widget([
         'model' => $model,
@@ -33,5 +37,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'full_name',
         ],
     ]) ?>
+
+    <hr>
+
+    <h3>Подписаться на новые книги автора</h3>
+    <?php $subscription = new Subscription(); ?>
+    <?php $form = ActiveForm::begin([
+        'action' => ['subscription/create', 'authorId' => $model->id],
+    ]); ?>
+    <?= $form->field($subscription, 'phone')->textInput([
+        'placeholder' => '+7 999 123-45-67',
+    ]) ?>
+    <?= Html::submitButton('Подписаться', ['class' => 'btn btn-primary']) ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

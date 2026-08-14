@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\helpers\ArrayHelper;
 
 /** @var yii\web\View $this */
 /** @var app\models\Book $model */
@@ -15,16 +16,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
+            <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Вы уверены что хотите удалить эту книгу?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        </p>
+    <?php endif; ?>
 
     <?= DetailView::widget([
         'model' => $model,
@@ -34,8 +38,19 @@ $this->params['breadcrumbs'][] = $this->title;
             'publication_year',
             'description:ntext',
             'isbn',
-            'image_url:url',
+            [
+                'label' => 'Авторы',
+                'value' => implode(', ', ArrayHelper::getColumn($model->authors, 'full_name')),
+            ],
         ],
     ]) ?>
+    <?php if ($model->image_url): ?>
+        <h3>Обложка</h3>
+
+        <?= Html::img($model->image_url, [
+            'alt' => $model->title,
+            'style' => 'max-width: 300px; height: auto;',
+        ]) ?>
+    <?php endif; ?>
 
 </div>
