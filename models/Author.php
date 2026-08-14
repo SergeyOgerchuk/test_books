@@ -49,16 +49,6 @@ class Author extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[BookAuthors]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBookAuthors()
-    {
-        return $this->hasMany(BookAuthor::class, ['author_id' => 'id']);
-    }
-
-    /**
      * Gets query for [[Books]].
      *
      * @return \yii\db\ActiveQuery
