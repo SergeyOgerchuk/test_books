@@ -1,5 +1,7 @@
 <?php
 
+use app\services\SmsPilotService;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -42,6 +44,11 @@ $config = [
             ],
         ],
         'db' => $db,
+        'smsSender' => [
+            'class' => SmsPilotService::class,
+            'apiKey' => $params['smsPilotApiKey'],
+            'testMode' => true,
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

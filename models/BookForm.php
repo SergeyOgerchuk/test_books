@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\services\SmsSenderInterface;
 use Yii;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
@@ -50,7 +51,7 @@ class BookForm extends Model
             [['image_url'], 'string', 'max' => 2048],
             [['image_url'], 'url'],
 
-            [['authorIds'], 'required', 'message' => 'Выберите хотя бы одного автора.'],
+            [['authorIds'], 'required', 'message' => 'Выберите хотя бы одного автора'],
             [['authorIds'], 'each', 'rule' => ['integer']],
 
             [
@@ -93,6 +94,8 @@ class BookForm extends Model
             return false;
         }
 
+        $isNewRecord = $this->book->isNewRecord;
+
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
@@ -103,7 +106,7 @@ class BookForm extends Model
             $this->book->image_url = $this->image_url;
 
             if (!$this->book->save(false)) {
-                throw new \RuntimeException('Не удалось сохранить книгу.');
+                throw new \RuntimeException('Не удалось сохранить книгу');
             }
 
             Yii::$app->db->createCommand()
@@ -125,16 +128,49 @@ class BookForm extends Model
                 ->execute();
 
             $transaction->commit();
-
-            return true;
         } catch (\Throwable $e) {
-            $transaction->rollBack();
+            if ($transaction->isActive) {
+                $transaction->rollBack();
+            }
+
             Yii::error($e);
 
-            $this->addError('', 'Не удалось сохранить книгу.');
+            $this->addError('', 'Не удалось сохранить книгу');
 
             return false;
         }
+
+        if ($isNewRecord) {
+            try {
+                $this->notifySubscribers();
+            } catch (\Throwable $e) {
+                Yii::warning($e->getMessage());
+            }
+        }
+
+        return true;
     }
 
+    private function notifySubscribers(): void
+    {
+        $smsSender = Yii::$app->get('smsSender');
+
+        if (!$smsSender instanceof SmsSenderInterface) {
+            throw new \RuntimeException('Компонент smsSender должен реализовывать SmsSenderInterface');
+        }
+
+        $phones = Subscription::find()
+            ->select('phone')
+            ->where(['author_id' => $this->authorIds])
+            ->column();
+
+        $phones = array_unique($phones);
+
+        foreach ($phones as $phone) {
+            $smsSender->send(
+                $phone,
+                'На сайте появилась новая книга автора, на которого вы подписались: ' . $this->title
+            );
+        }
+    }
 }
