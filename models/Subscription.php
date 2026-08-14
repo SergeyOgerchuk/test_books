@@ -29,7 +29,26 @@ class Subscription extends \yii\db\ActiveRecord
         return [
             [['author_id', 'phone'], 'required'],
             [['author_id'], 'integer'],
+            [['phone'], 'filter', 'filter' => static function ($value) {
+                $phone = preg_replace('/\D+/', '', (string) $value);
+
+                if (strlen($phone) === 10) {
+                    return '7' . $phone;
+                }
+
+                if (strlen($phone) === 11 && $phone[0] === '8') {
+                    return '7' . substr($phone, 1);
+                }
+
+                return $phone;
+            }],
             [['phone'], 'string', 'max' => 32],
+            [
+                ['phone'],
+                'match',
+                'pattern' => '/^7\d{10}$/',
+                'message' => 'Введите телефон в формате +7 999 123-45-67',
+            ],
 
             [
                 ['author_id', 'phone'],
