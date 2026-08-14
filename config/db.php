@@ -1,14 +1,17 @@
 <?php
 
-return [
+$config = [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
+    'dsn' => 'mysql:host=127.0.0.1;port=3306;dbname=book_catalog',
     'username' => 'root',
     'password' => '',
-    'charset' => 'utf8',
-
-    // Schema cache options (for production environment)
-    //'enableSchemaCache' => true,
-    //'schemaCacheDuration' => 60,
-    //'schemaCache' => 'cache',
+    'charset' => 'utf8mb4',
 ];
+
+$localConfig = __DIR__ . '/db-local.php';
+
+if (file_exists($localConfig)) {
+    $config = array_merge($config, require $localConfig);
+}
+
+return $config;

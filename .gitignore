@@ -29,6 +29,9 @@ phpunit.phar
 # local phpunit config
 /phpunit.xml
 
+# local database config
+/config/db-local.php
+
 tests/_output/*
 tests/_support/_generated
 
