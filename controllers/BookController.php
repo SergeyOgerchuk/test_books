@@ -3,12 +3,12 @@
 namespace app\controllers;
 
 use app\models\Book;
+use app\models\BookForm;
 use app\models\BookSearch;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use app\models\BookForm;
 
 /**
  * BookController implements the CRUD actions for Book model.

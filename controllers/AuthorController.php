@@ -4,10 +4,11 @@ namespace app\controllers;
 
 use app\models\Author;
 use app\models\AuthorSearch;
+use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 
 /**
  * AuthorController implements the CRUD actions for Author model.
@@ -130,7 +131,7 @@ class AuthorController extends Controller
         $model = $this->findModel($id);
 
         if ($model->getBooks()->exists()) {
-            \Yii::$app->session->setFlash(
+            Yii::$app->session->setFlash(
                 'error',
                 'Нельзя удалить автора с привязкой к книгам'
             );

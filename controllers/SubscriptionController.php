@@ -4,9 +4,10 @@ namespace app\controllers;
 
 use app\models\Author;
 use app\models\Subscription;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 class SubscriptionController extends Controller
 {
@@ -29,7 +30,7 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * @param int $authorId 
+     * @param int $authorId
      * @return \yii\web\Response
      * @throws NotFoundHttpException
      */
@@ -42,9 +43,9 @@ class SubscriptionController extends Controller
             $model->author_id = $author->id;
 
             if ($model->save()) {
-                \Yii::$app->session->setFlash('success', 'Вы успешно подписались на автора.');
+                Yii::$app->session->setFlash('success', 'Вы успешно подписались на автора.');
             } else {
-                \Yii::$app->session->setFlash(
+                Yii::$app->session->setFlash(
                     'error',
                     implode(' ', $model->getFirstErrors())
                 );
@@ -55,9 +56,8 @@ class SubscriptionController extends Controller
     }
 
     /**
-
      * @param int $id
-     * @return Author 
+     * @return Author
      * @throws NotFoundHttpException
      */
     protected function findAuthor($id)

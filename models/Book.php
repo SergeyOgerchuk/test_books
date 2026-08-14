@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "book".
  *
@@ -15,12 +13,9 @@ use Yii;
  * @property string|null $image_url
  *
  * @property Author[] $authors
- * @property BookAuthor[] $bookAuthors
  */
 class Book extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -70,15 +65,4 @@ class Book extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Author::class, ['id' => 'author_id'])->viaTable('book_author', ['book_id' => 'id']);
     }
-
-    /**
-     * Gets query for [[BookAuthors]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBookAuthors()
-    {
-        return $this->hasMany(BookAuthor::class, ['book_id' => 'id']);
-    }
-
 }

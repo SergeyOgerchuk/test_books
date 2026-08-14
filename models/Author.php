@@ -2,22 +2,17 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "author".
  *
  * @property int $id
  * @property string $full_name
  *
- * @property BookAuthor[] $bookAuthors
  * @property Book[] $books
  * @property Subscription[] $subscriptions
  */
 class Author extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -67,5 +62,4 @@ class Author extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Subscription::class, ['author_id' => 'id']);
     }
-
 }
